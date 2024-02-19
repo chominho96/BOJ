@@ -1,53 +1,43 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-#define MAX_SIZE 32001
-#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
+#include <vector>
+#define FASTIO ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define endl '\n'
+#define MAX_SIZE 32010
 
 using namespace std;
 
-int M, N;
-
-int DEPTH[MAX_SIZE];
+int N, M;
 vector<int> MAP[MAX_SIZE];
-bool visited[MAX_SIZE];
+int INCOME[MAX_SIZE];
+queue<int> que;
+
+void init() {
+    for (int i = 1; i <= N; i++) {
+        if (INCOME[i] == 0) que.push(i);
+    }
+}
+
+void calc() {
+    while (!que.empty()) {
+        int curr = que.front();
+        que.pop();
+        cout << curr << ' ';
+        for (int i = 0; i < MAP[curr].size(); i++) {
+            if (--INCOME[MAP[curr][i]] == 0) que.push(MAP[curr][i]);
+        }
+    }
+    cout << endl;
+}
 
 int main() {
-	FASTIO;
-	cin >> N >> M;
-
-	int A, B;
-	for (int i = 0; i < M; i++) {
-		cin >> A >> B;
-		DEPTH[B]++;
-		MAP[A].push_back(B);
-	}
-	
-	queue<int> que;
-	for (int i = 1; i <= N; i++) {
-		if (DEPTH[i] == 0) {
-			visited[i] = true;
-			que.push(i);
-		}
-	}
-
-	while (!que.empty()) {
-		int current = que.front();
-		que.pop();
-		cout << current << ' ';
-		for (int i = 0; i < MAP[current].size(); i++) {
-			int next = MAP[current][i];
-
-			if (!visited[next]) {
-				DEPTH[next]--;
-				if (DEPTH[next] == 0) {
-					visited[next] = true;
-					que.push(next);
-				}
-			}
-			
-		}
-		
-	}
-	cout << '\n';
+    FASTIO
+    cin >> N >> M;
+    for (int i = 0; i < M; i++) {
+        int A, B; cin >> A >> B;
+        MAP[A].push_back(B);
+        INCOME[B]++;
+    }
+    init();
+    calc();
 }
